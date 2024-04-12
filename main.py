@@ -73,6 +73,14 @@ class ImageAnalysis(Resource):
         for emotion, value in zip(emotions, emotion_values):
             value = float(value)
             if value > 25:
+                if emotion == 'neutral':
+                    emotion = 'contempt'
+                elif emotion == 'happy':
+                    emotion = 'happiness'
+                elif emotion == 'sad':
+                    emotion = 'sadness'
+                elif emotion == 'angry':
+                    emotion = 'anger'
                 high_values.append((emotion, value))
 
         high_values.sort(key=lambda x: x[1], reverse=True)
@@ -84,6 +92,15 @@ class ImageAnalysis(Resource):
             export_values.append(high_values[0])
 
         dominant_emotion = face['dominant_emotion']
+
+        if dominant_emotion == 'neutral':
+            dominant_emotion = 'contempt'
+        elif dominant_emotion == 'happy':
+            dominant_emotion = 'happiness'
+        elif dominant_emotion == 'sad':
+            dominant_emotion = 'sadness'
+        elif dominant_emotion == 'angry':
+            dominant_emotion = 'anger'
 
         print(export_values)
 
