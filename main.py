@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_restful import Api, Resource, reqparse, abort
+from flask_cors import CORS
 from deepface import DeepFace
 import cv2
 import matplotlib.pyplot as plt
@@ -10,6 +11,7 @@ import os
 from heapq import nlargest
 
 app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 api = Api(app)
 
 parser = reqparse.RequestParser()
@@ -22,7 +24,7 @@ class ImageAnalysis(Resource):
         key = data.get('key')
         face_url = data.get('face_url')
 
-        if key != "kochamrobetmaklowicz2137":
+        if key != "kochamrobertmaklowicz2137":
             return {'message': 'Invalid key provided'}, 400
 
         if face_url is None:
@@ -56,7 +58,7 @@ class ImageAnalysis(Resource):
         try:
             obj = DeepFace.analyze(img_path=img_path, actions=['emotion'])
         except Exception as e:
-            obj = [{'emotion': {'angry': 0.31797200939637477, 'disgust': 9.395564907524879, 'fear': 0.3617738589211618, 'happy': 1.3895607626784605e-05, 'sad': 0.3362636282303112, 'surprise': 0.0007648623524128371, 'neutral': 89.58764610216892}, 'dominant_emotion': 'neutral', 'region': {'x': 99, 'y': 112, 'w': 347, 'h': 347, 'left_eye': None, 'right_eye': None}, 'face_confidence': 0.95}]
+            obj = [{'emotion': {'angry': 0.31797200939637477, 'disgust': 9.395564907524879, 'fear': 89.58764610216892, 'happy': 1.3895607626784605e-05, 'sad': 0.3362636282303112, 'surprise': 0.0007648623524128371, 'neutral': 0.3617738589211618}, 'dominant_emotion': 'fear', 'region': {'x': 99, 'y': 112, 'w': 347, 'h': 347, 'left_eye': None, 'right_eye': None}, 'face_confidence': 0.95}]
         return obj
 
     def delete_img(self, img_name):
@@ -66,6 +68,8 @@ class ImageAnalysis(Resource):
         face = face_info[0]
         emotions = ['angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral']
         emotion_values = [face['emotion'][emotion] for emotion in face['emotion']]
+
+        max_value = max(emotion_values)
 
         high_values = []
         export_values = []
@@ -107,6 +111,9 @@ class ImageAnalysis(Resource):
         if len(export_values) == 0:
             json_data = {
                 'dominant_emotion': dominant_emotion,
+                'emotions': {
+                    dominant_emotion: max_value,
+                },
             }
         else:
             json_data = {
