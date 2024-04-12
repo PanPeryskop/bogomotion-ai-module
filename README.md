@@ -12,7 +12,7 @@
 
 ### Steps to run:
 
-1. Clone repository
-2. Run `npm install`
-3. Configure `bogomotion-ai-module`'s api in `stach.config.js` file
-4. Run development server with `npm run dev` command
+1. Follow guide from [bogomotion](https://github.com/azizko1337/bogomotion)
+2. Create python virtual environment
+3. Install all imported libraries by running `pip install [library_name]`
+4. run aplicacion
