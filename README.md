@@ -5,7 +5,7 @@
 ## Used technologies:
 
 - flask
-- [depface](https://github.com/serengil/deepface)
+- [dreepface](https://github.com/serengil/deepface)
 - flask_restful
 - pillow
 - flask_cors
