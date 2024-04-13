@@ -7,8 +7,14 @@
 - flask
 - [deepface](https://github.com/serengil/deepface)
 - flask_restful
-- pillow
 - flask_cors
+- cv2
+- matplotlib
+- PIL (Pillow)
+- llamacpp-python
+- langchain
+- langdetect
+- deep_translator
 
 ### Steps to run:
 

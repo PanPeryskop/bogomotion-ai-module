@@ -10,6 +10,12 @@ from io import BytesIO
 import os
 from heapq import nlargest
 
+from langchain.callbacks.manager import CallbackManager
+from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
+from langchain_community.llms import LlamaCpp
+from langdetect import detect
+from deep_translator import GoogleTranslator
+
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 api = Api(app)
@@ -17,15 +23,54 @@ api = Api(app)
 parser = reqparse.RequestParser()
 parser.add_argument('face', required=True)
 
+MODEL_PATH = "Models/llama-2-7b-chat.Q8_0.gguf"
+
+
+def load_model() -> LlamaCpp:
+    callback = CallbackManager([StreamingStdOutCallbackHandler()])
+    n_gpu_layers = 40
+    n_batch = 512
+    Llama_model: LlamaCpp = LlamaCpp(
+        model_path=MODEL_PATH,
+        temperature=0.5,
+        max_tokens=2000,
+        n_gpu_layers=n_gpu_layers,
+        n_batch=n_batch,
+        top_p=1,
+        callback_manager=callback,
+        verbose=True
+    )
+
+    return Llama_model
+
+
+model = load_model()
+
+
+def transporter(prompt):
+    if detect(prompt) != 'en':
+        prompt = GoogleTranslator(source='auto', target='en').translate(prompt)
+    response = model.invoke(prompt)
+    output = response.replace("Answer: ", "", 1)
+    output = GoogleTranslator(source='en', target='pl').translate(output)
+    return output
+
 
 class ImageAnalysis(Resource):
     def post(self):
         data = request.get_json()
         key = data.get('key')
         face_url = data.get('face_url')
+        prompt = data.get('prompt')
 
-        if key != "kochamrobertmaklowicz2137":
+        if key != "kochamrobertmaklowicz2137" and key != "kochamrobertkubica2137":
             return {'message': 'Invalid key provided'}, 400
+        elif key == "kochamrobertkubica2137":
+            if prompt is None:
+                return {'message': 'No prompt provided'}, 400
+            output = transporter(prompt)
+            output = self.clean_output(output)
+            return self.jsonify_ai_output(output), 200
 
         if face_url is None:
             return {'message': 'No face URL provided'}, 400
@@ -123,6 +168,13 @@ class ImageAnalysis(Resource):
 
         return json_data
 
+    def jsonify_ai_output(self, ai_output):
+        return {'response': ai_output}
+
+    def clean_output(self, output):
+        output = output.lstrip('?\n')
+        output = output.capitalize()
+        return output
 
 api.add_resource(ImageAnalysis, '/')
 
