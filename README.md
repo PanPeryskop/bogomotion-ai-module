@@ -9,7 +9,6 @@
 - flask_restful
 - flask_cors
 - cv2
-- matplotlib
 - PIL (Pillow)
 - llamacpp-python
 - langchain
