@@ -20,5 +20,5 @@
 1. Follow guide from [bogomotion](https://github.com/azizko1337/bogomotion)
 2. Create python virtual environment
 3. Copy code from main.py
-4. Install all imported libraries by running `pip install [library_name]`
+4. run `pip install -r requirements.txt`
 5. Run aplicacion

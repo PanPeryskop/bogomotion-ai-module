@@ -1,0 +1,11 @@
+flask
+flask_restful
+flask_cors
+deepface
+opencv-python
+matplotlib
+requests
+Pillow
+langchain
+langdetect
+deep_translator
