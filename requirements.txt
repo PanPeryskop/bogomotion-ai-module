@@ -8,4 +8,5 @@ requests
 Pillow
 langchain
 langdetect
+llama-cpp-python
 deep_translator

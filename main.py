@@ -1,12 +1,15 @@
 from flask import Flask, request, jsonify
-from flask_restful import Api, Resource, reqparse, abort
+from flask_restful import Api, Resource, reqparse
 from flask_cors import CORS
-from deepface import DeepFace
-import cv2
-import matplotlib.pyplot as plt
 import requests
+
+from deepface import DeepFace
+
+import cv2
 from PIL import Image
 from io import BytesIO
+
+import matplotlib.pyplot as plt
 import os
 from heapq import nlargest
 
@@ -15,6 +18,7 @@ from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain_community.llms import LlamaCpp
 from langdetect import detect
 from deep_translator import GoogleTranslator
+
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
@@ -175,6 +179,7 @@ class ImageAnalysis(Resource):
         output = output.lstrip('?\n')
         output = output.capitalize()
         return output
+
 
 api.add_resource(ImageAnalysis, '/')
 
