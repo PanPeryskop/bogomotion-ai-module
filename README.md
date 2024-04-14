@@ -20,5 +20,6 @@
 1. Follow guide from [bogomotion](https://github.com/azizko1337/bogomotion)
 2. Create python virtual environment
 3. Copy code from main.py
-4. run `pip install -r requirements.txt`
-5. Run aplicacion
+4. Run `pip install -r requirements.txt`
+5. Place llm model in `Models` folder
+6. Run aplicacion
